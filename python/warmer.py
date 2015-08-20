@@ -84,8 +84,9 @@ if __name__ == '__main__':
     # Setup Multiprocessing
     p = Pool(64)
     # FILE - Check for Batch file
+    current_url_list = []
+    count = len(current_url_list)
     if args.file:
-        current_url_list = []
         print "file = " + args.file
         # Load and parse each line of the file as URLs
         data = load_batch_file(args.file)
@@ -94,7 +95,6 @@ if __name__ == '__main__':
             # Map List
             p.map(curl_url, current_url_list)
             # Count URLs from sitemap
-            count = len(current_url_list)
             print "URL COUNT : ", count
             time.sleep(2)
     # URL STRING - Default to provided URL (full)
@@ -103,7 +103,6 @@ if __name__ == '__main__':
         url = args.url + "/sitemap.xml"
         tree = Et.parse(urlopen(url))
         root = tree.getroot()
-        current_url_list = []
         ns = {'sitemap': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
         # Loop throught namespaced sitemap XML
         for url in root.findall('sitemap:url', ns):
@@ -113,6 +112,5 @@ if __name__ == '__main__':
         # Map List
         p.map(curl_url, current_url_list)
         # Count URLs from sitemap
-        count = len(current_url_list)
         print "URL COUNT : ", count
         print datetime.now() - startTime
